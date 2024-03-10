@@ -1,13 +1,54 @@
-import { StyleSheet } from 'react-native';
-
-import EditScreenInfo from '@/components/EditScreenInfo';
+import { ActivityIndicator, StyleSheet } from 'react-native';
 import { Text, View } from '@/components/Themed';
+import { gql, useQuery } from '@apollo/client';
+
+const query = gql`
+  query SearchBooks($q: String) {
+    googleBooksSearch(q: $q, country: "US") {
+      items {
+        id
+        volumeInfo {
+          authors
+          averageRating
+          description
+          imageLinks {
+            thumbnail
+          }
+          title
+          subtitle
+          industryIdentifiers {
+            identifier
+            type
+          }
+        }
+      }
+    }
+    openLibrarySearch(q: $q) {
+      docs {
+        author_name
+        title
+        cover_edition_key
+        isbn
+      }
+    }
+  }
+`;
+
 
 export default function TabOneScreen() {
+
+  const { data, loading, error } = useQuery(query, { variables: { q: "" } })
+
+  console.log(data, loading, error);
+
+
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Animal</Text>
-      <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
+      {loading && <ActivityIndicator />}
+      {error && <View>
+        <Text>Error fetching books</Text>
+        <Text>{error.message}</Text>
+      </View>}
     </View>
   );
 }
