@@ -5,7 +5,21 @@ import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 
+import { ApolloClient } from '@apollo/client';
+import { InMemoryCache } from '@apollo/client/cache';
+import { ApolloProvider } from '@apollo/client/react';
+
 import { useColorScheme } from '@/components/useColorScheme';
+
+const API_KEY = "palmaresdosul::stepzen.net+1000::ab841cc58567c1027da9b52ae6347e2b3b1779fa18440fe5ff78642b65ba88e8"
+
+const client = new ApolloClient({
+  uri: "https://palmaresdosul.stepzen.net/api/queenly-panther/__graphql",
+  headers: {
+    Authorization: `Apikey ${API_KEY}`,
+  },
+  cache: new InMemoryCache(),
+})
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -49,10 +63,12 @@ function RootLayoutNav() {
 
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
-      </Stack>
+      <ApolloProvider client={client}>
+        <Stack>
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
+        </Stack>
+      </ApolloProvider>
     </ThemeProvider>
   );
 }
