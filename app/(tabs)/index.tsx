@@ -1,7 +1,8 @@
-import { ActivityIndicator, FlatList, StyleSheet } from 'react-native';
+import { ActivityIndicator, Button, FlatList, StyleSheet, TextInput } from 'react-native';
 import { Text, View } from '@/components/Themed';
-import { gql, useQuery } from '@apollo/client';
+import { gql, useQuery, useLazyQuery } from '@apollo/client';
 import BookItem from '@/components/bookItem';
+import React, { useState } from 'react';
 
 const query = gql`
   query SearchBooks($q: String) {
@@ -38,13 +39,24 @@ const query = gql`
 
 export default function TabOneScreen() {
 
-  const { data, loading, error } = useQuery(query, { variables: { q: "react native" } })
+  const [search, setSearch] = useState('')
 
-  // console.log(data, loading, error);
-
+  const [runQuery, { data, loading, error }] = useLazyQuery(query) //Query works after every change of input text, lazy query will change only when you tell it to run. Destrucured as arr, first parameter - function, second - object. For query - destruct as object. { variables: { q: search } } is removed from useLazyQuery arguments, cause variable will be defined when we want to run the query
 
   return (
+
     <View style={styles.container}>
+
+      <View style={styles.header}>
+        <TextInput
+          value={search}
+          onChangeText={setSearch}
+          placeholder='Search...'
+          style={styles.input}
+        />
+        <Button title='Search' color='coral' onPress={() => runQuery({ variables: { q: search } })} />
+      </View>
+
       {loading && <ActivityIndicator />}
       {error && <View>
         <Text>Error fetching books</Text>
@@ -76,5 +88,18 @@ const styles = StyleSheet.create({
     marginVertical: 30,
     height: 1,
     width: '80%',
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 10
+  },
+  input: {
+    flex: 1, //takes all free space
+    borderWidth: 1,
+    borderColor: 'gainsboro',
+    borderRadius: 4,
+    padding: 2,
+    paddingLeft: 10,
   },
 });
