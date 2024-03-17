@@ -6,7 +6,6 @@ type BookItemProps = {
 };
 
 const BookItem = ({ book }: BookItemProps) => {
-    console.log('hello', book);
     return (
         <View style={styles.container}>
             <Image source={{ uri: book.image }} style={styles.image} />
