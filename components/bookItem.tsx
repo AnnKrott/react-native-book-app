@@ -39,6 +39,7 @@ const styles = StyleSheet.create({
         flex: 1,
         aspectRatio: 2 / 3,
         marginRight: 10,
+        objectFit: 'contain'
     },
     contentContainer: {
         flex: 4,

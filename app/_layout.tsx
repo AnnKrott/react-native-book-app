@@ -68,7 +68,6 @@ function RootLayoutNav() {
         <MyBooksProvider>
           <Stack>
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-            <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
           </Stack>
         </MyBooksProvider>
       </ApolloProvider>

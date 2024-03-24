@@ -1,9 +1,9 @@
 import { ActivityIndicator, Button, FlatList, StyleSheet, TextInput } from 'react-native';
 import { Text, View } from '@/components/Themed';
-import { gql, useQuery, useLazyQuery } from '@apollo/client';
+import { gql, useLazyQuery } from '@apollo/client';
 import BookItem from '@/components/bookItem';
 import React, { useState } from 'react';
-
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 
 const query = gql`
@@ -39,7 +39,7 @@ const query = gql`
 `;
 
 
-export default function TabOneScreen() {
+export default function Search() {
 
   const [search, setSearch] = useState('')
   const [provider, setProvider] = useState<'googleBooksSearch' | 'openLibrarySearch'>('googleBooksSearch')
@@ -64,7 +64,7 @@ export default function TabOneScreen() {
 
   return (
 
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
 
       <View style={styles.header}>
         <TextInput
@@ -111,7 +111,7 @@ export default function TabOneScreen() {
         }
         renderItem={({ item }) => <BookItem book={parseBook(item)} />}
       />
-    </View>
+    </SafeAreaView>
   );
 }
 
@@ -119,6 +119,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 15,
+    backgroundColor: 'white',
   },
   title: {
     fontSize: 20,
@@ -139,7 +140,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'gainsboro',
     borderRadius: 4,
-    padding: 2,
+    padding: 7,
     paddingLeft: 10,
   },
   tabs: {
