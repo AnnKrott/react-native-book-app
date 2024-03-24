@@ -1,4 +1,5 @@
-import { ReactNode, createContext, useContext, useState } from "react";
+import { ReactNode, createContext, useContext, useState, useEffect } from "react";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type Props = {
     children: ReactNode
@@ -16,10 +17,20 @@ const MyBooksContext = createContext<MyBooksContextType>({
     savedBooks: []
 })
 
-
 const MyBooksProvider = ({ children }: Props) => {
 
     const [savedBooks, setSavedBooks] = useState<Book[]>([])
+    const [loaded, setLoaded] = useState(false)
+
+    useEffect(() => {
+        loadData()
+    }, []) // load the data when the components mounts
+
+    useEffect(() => {
+        if (loaded) {
+            persistData()
+        }
+    }, [savedBooks]) //when the arr of savedBooks changes, data is saved
 
     const areBookTheSame = (a: Book, b: Book) => {
         return JSON.stringify(a) === JSON.stringify(b)
@@ -35,6 +46,21 @@ const MyBooksProvider = ({ children }: Props) => {
         } else {
             setSavedBooks((books) => [book, ...books])
         }
+    }
+
+    // write data to local storage
+    const persistData = async () => {
+        await AsyncStorage.setItem('bookData', JSON.stringify(savedBooks))
+    }
+
+    // read data from ls
+    const loadData = async () => {
+        const dataString = await AsyncStorage.getItem('bookData')
+        if (dataString) {
+            const items = JSON.parse(dataString)
+            setSavedBooks(items)
+        }
+        setLoaded(true)
     }
 
     return (
